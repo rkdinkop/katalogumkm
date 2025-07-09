@@ -26,8 +26,8 @@
 
   <script>
     const umkmID = new URLSearchParams(window.location.search).get("id");
-    const SHEET_API_UMKM = 'https://script.google.com/macros/s/YOUR_WEBAPP_ID/exec?sheet=umkm';
-    const SHEET_API_PRODUK = 'https://script.google.com/macros/s/YOUR_WEBAPP_ID/exec?sheet=produk';
+    const SHEET_API_UMKM = 'https://script.google.com/macros/s/AKfycbyj55IGe_ZfForpEb72cvwlUOJZ881_uH9l08_oLgfPlEx0slF2NYhFkGnJd4SldgRq/exec?sheet=umkm';
+    const SHEET_API_PRODUK = 'https://script.google.com/macros/s/AKfycbyj55IGe_ZfForpEb72cvwlUOJZ881_uH9l08_oLgfPlEx0slF2NYhFkGnJd4SldgRq/exec?sheet=produk';
 
     async function loadUMKM() {
       const [resUMKM, resProduk] = await Promise.all([
