@@ -5,22 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil UMKM</title>
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
   <header class="main-header">
     <h1>Profil UMKM</h1>
     <div style="margin-top: 1rem">
-      <button onclick="switchView('grid')">Tampilan Thumbnail</button>
-      <button onclick="switchView('list')">Tampilan List</button>
+      <button onclick="switchView('grid')"><i class="fas fa-th"></i></button>
+      <button onclick="switchView('list')"><i class="fas fa-bars"></i></button>
     </div>
   </header>
 
-  <section id="umkm-profil" class="umkm-info"></section>
+  <section id="umkm-profil" class="umkm-info" style="padding: 1rem; max-width: 900px; margin: auto; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-radius: 10px; display: flex; gap: 1rem;">
+    <!-- konten profil akan diisi oleh JS -->
+  </section>
 
   <h2 style="margin: 1rem">Produk UMKM Ini:</h2>
   <main id="umkm-produk" class="produk-grid"></main>
 
-  <button id="checkout-btn" class="btn-checkout">Checkout via WA</button>
+  <button id="checkout-btn" class="btn-checkout"><i class="fas fa-shopping-cart"></i> Checkout</button>
 
   <!-- Modal detail produk -->
   <div id="produk-modal" class="modal">
