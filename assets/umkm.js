@@ -12,17 +12,20 @@ Promise.all([
 
   const umkmProfil = document.getElementById("umkm-profil");
   umkmProfil.innerHTML = `
-    <h2>${umkm.nama_umkm}</h2>
-    <p><strong>Deskripsi:</strong> ${umkm.deskripsi || '-'}</p>
-    <p><strong>Alamat:</strong> ${umkm.alamat}</p>
-    <p><strong>Kecamatan:</strong> ${umkm.kecamatan}</p>
-    <p><strong>Kontak:</strong> <a href="https://wa.me/${umkm.kontak_wa}" target="_blank">${umkm.kontak_wa}</a></p>
-    <div style="margin-top: 1rem">
+  <div class="umkm-card">
+    <img src="${umkm.logo_url}" alt="${umkm.nama_umkm}" class="umkm-logo" />
+    <div class="umkm-meta">
+      <h2>${umkm.nama_umkm}</h2>
+      <p><strong>Deskripsi:</strong> ${umkm.deskripsi || '-'}</p>
+      <p><strong>Alamat:</strong> ${umkm.alamat}</p>
+      <p><strong>Kecamatan:</strong> ${umkm.kecamatan}</p>
+      <p><strong>Kontak:</strong> <a href="https://wa.me/${umkm.kontak_wa}" target="_blank">${umkm.kontak_wa}</a></p>
       <iframe width="100%" height="200" frameborder="0" style="border:0"
         src="https://www.google.com/maps?q=${umkm.latitude},${umkm.longitude}&hl=id&z=15&output=embed" allowfullscreen>
       </iframe>
     </div>
-  `;
+  </div>
+`;
 
   const produkUMKM = produkData.filter(p => p.id_umkm === idUMKM && p.status === "aktif");
   const container = document.getElementById("umkm-produk");
