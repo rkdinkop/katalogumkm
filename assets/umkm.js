@@ -69,6 +69,10 @@ Promise.all([
     modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
     modal.querySelector(".modal-gambar").src = gambar;
     modal.querySelector(".modal-harga").innerText = "Rp " + harga;
+    modal.querySelector(".modal-gambar").onclick = function () {
+      this.classList.toggle("zoomed");
+    };
+
     modal.style.display = "flex";
   }
 
