@@ -1,4 +1,5 @@
 const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
+let keranjang = [];
 
 // Fetch data dari semua sheet yang dibutuhkan
 Promise.all([
@@ -7,29 +8,18 @@ Promise.all([
   fetch(`${sheetBase}/pengaturan`).then(res => res.json())
 ])
 .then(([produk, umkm, pengaturan]) => {
-  // Debug log
-  console.log("Produk:", produk);
-  console.log("UMKM:", umkm);
-  console.log("Pengaturan:", pengaturan);
-
-  // Cek apakah data pengaturan valid
   if (Array.isArray(pengaturan)) {
     const siteTitle = pengaturan.find(p => p.key === 'site_title')?.value || "Katalog UMKM";
     const footerText = pengaturan.find(p => p.key === 'text_footer')?.value || "";
-
     document.getElementById("site-title").innerText = siteTitle;
     document.getElementById("footer-text").innerText = footerText;
-  } else {
-    console.warn("Pengaturan tidak valid atau gagal dimuat.");
   }
 
-  // Referensi elemen pencarian dan daftar produk
   const searchInput = document.getElementById("search");
   const filterKategori = document.getElementById("filter-kategori");
   const filterKecamatan = document.getElementById("filter-kecamatan");
   const produkList = document.getElementById("produk-list");
 
-  // Generate dropdown filter kategori dan kecamatan
   const semuaKategori = [...new Set(produk.map(p => p.kategori).filter(k => k))];
   const semuaKecamatan = [...new Set(produk.map(p => p.kecamatan).filter(k => k))];
 
@@ -50,9 +40,10 @@ Promise.all([
 
     produkList.innerHTML = hasil.map(p => {
       const u = umkm.find(u => u.id_umkm === p.id_umkm);
+      const favClass = keranjang.includes(p.id_produk) ? 'selected' : '';
       return `
         <div class="produk-card">
-          <div class="produk-img">
+          <div class="produk-img" onclick="showDetail('${p.nama_produk}', '${p.deskripsi}', '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
             <img src="${p.gambar_url}" alt="${p.nama_produk}" />
           </div>
           <div class="produk-info">
@@ -61,7 +52,8 @@ Promise.all([
             <p class="produk-umkm">${u?.nama_umkm || "UMKM"} - ${p.kecamatan}</p>
             <div class="produk-actions">
               <a href="umkm.html?id=${u?.id_umkm}" class="btn-detail">Lihat UMKM</a>
-              <a href="https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" class="btn-wa" target="_blank">Pesan via WA</a>
+              <button class="btn-wa" onclick="window.open('https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}', '_blank')">Pesan via WA</button>
+              <button class="btn-fav ${favClass}" onclick="toggleFav('${p.id_produk}', this)">❤️</button>
             </div>
           </div>
         </div>
@@ -69,24 +61,46 @@ Promise.all([
     }).join("");
   }
 
+  window.toggleFav = function(id, el) {
+    if (keranjang.includes(id)) {
+      keranjang = keranjang.filter(i => i !== id);
+      el.classList.remove('selected');
+    } else {
+      keranjang.push(id);
+      el.classList.add('selected');
+    }
+    console.log("Keranjang:", keranjang);
+  }
+
+  window.showDetail = function(nama, deskripsi, gambar, harga) {
+    const modal = document.getElementById("produk-modal");
+    modal.querySelector(".modal-nama").innerText = nama;
+    modal.querySelector(".modal-deskripsi").innerText = deskripsi;
+    modal.querySelector(".modal-gambar").src = gambar;
+    modal.querySelector(".modal-harga").innerText = "Rp " + harga;
+    modal.style.display = "block";
+  }
+
+  document.getElementById("modal-close").onclick = () => {
+    document.getElementById("produk-modal").style.display = "none";
+  };
+
+  document.getElementById("checkout-btn").onclick = () => {
+    if (keranjang.length === 0) return alert("Pilih minimal 1 produk dulu.");
+    const produkTerpilih = produk.filter(p => keranjang.includes(p.id_produk));
+    let pesan = "Halo, saya tertarik dengan produk berikut:%0A" + produkTerpilih.map(p => `- ${p.nama_produk}`).join("%0A");
+    window.open(`https://wa.me/${produkTerpilih[0].kontak_wa}?text=${pesan}`, '_blank');
+  };
+
   // Render awal
   renderProduk();
-
-  // Event pencarian & filter
-  searchInput.addEventListener("input", () => {
-    renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value);
-  });
-
-  filterKategori.addEventListener("change", () => {
-    renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value);
-  });
-
-  filterKecamatan.addEventListener("change", () => {
-    renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value);
-  });
+  searchInput.addEventListener("input", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
+  filterKategori.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
+  filterKecamatan.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
 
 })
 .catch(error => {
   console.error("Gagal memuat data dari Google Sheets:", error);
 });
+
 
