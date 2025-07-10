@@ -255,3 +255,15 @@
   }
 }
 
+#umkm-produk.list-mode .produk-card {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+#umkm-produk.list-mode .produk-img img {
+  width: 120px;
+  height: 120px;
+}
+
