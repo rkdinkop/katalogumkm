@@ -251,3 +251,14 @@ body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; }
   font-size: 0.75rem;
 }
 
+#review-section {
+  visibility: hidden;
+  opacity: 0;
+  /* ... */
+}
+#review-section.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+
