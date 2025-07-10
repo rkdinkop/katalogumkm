@@ -1,216 +1,150 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profil UMKM</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-    .umkm-card {
-      display: grid;
-      grid-template-columns: 1fr 2fr 2fr;
-      gap: 1rem;
-      margin: 1rem;
-      background: #fff;
-      padding: 1rem;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .umkm-logo {
-      width: 100%;
-      max-width: 120px;
-      object-fit: contain;
-    }
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 1rem;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-    }
-    #floating-cart {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #f57224;
-      color: white;
-      border-radius: 50%;
-      padding: 15px;
-      font-size: 1.2rem;
-      z-index: 999;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-    #floating-cart span#cart-count {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: red;
-      color: white;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-    }
-    #review-section {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
-      background: white;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.2);
-      overflow-y: auto;
-      padding: 1.5rem;
-      z-index: 1001;
-      border-radius: 12px;
-      font-family: sans-serif;
-      visibility: hidden;
-      opacity: 0;
-      transition: visibility 0s, opacity 0.3s ease-in-out;
-    }
-    #review-section.active {
-      visibility: visible;
-      opacity: 1;
-    }
-    #review-section h3 {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      color: #333;
-      font-size: 1.25rem;
-    }
-    #review-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1rem;
-    }
-    #review-table th,
-    #review-table td {
-      border: 1px solid #ddd;
-      padding: 0.5rem;
-      text-align: center;
-    }
-    #review-table th {
-      background-color: #f5f5f5;
-    }
-    .review-actions {
-      display: flex;
-      justify-content: flex-end;
-    }
-    #send-wa-btn {
-      background-color: #25D366;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    #send-wa-btn:hover {
-      background-color: #1ebe5d;
-    }
-    #review-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #999;
-    }
-    #review-close:hover {
-      color: #333;
-    }
-  </style>
-</head>
-<body>
-  <header class="main-header" style="background-color: #f57224; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
-    <a href="index.html" style="text-decoration: none; color: white; font-size: 1.5rem; font-weight: bold;">
-      KatalogUMKM.id
-    </a>
-    <div class="view-toggle">
-      <button onclick="switchView('grid')" title="Tampilan Thumbnail"><i class="fas fa-th"></i></button>
-      <button onclick="switchView('list')" title="Tampilan List"><i class="fas fa-bars"></i></button>
+const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
+const urlParams = new URLSearchParams(window.location.search);
+const idUMKM = urlParams.get("id");
+let keranjang = [];
+
+Promise.all([
+  fetch(`${sheetBase}/umkm`).then(res => res.json()),
+  fetch(`${sheetBase}/produk`).then(res => res.json())
+]).then(([umkmData, produkData]) => {
+  const umkm = umkmData.find(u => u.id_umkm === idUMKM);
+  if (!umkm) return;
+
+  const umkmProfil = document.getElementById("umkm-profil");
+  umkmProfil.innerHTML = `
+    <div class="umkm-card">
+      <img src="${umkm.logo_url}" alt="${umkm.nama_umkm}" class="umkm-logo" />
+      <div class="umkm-meta">
+        <h2>${umkm.nama_umkm}</h2>
+        <p><strong>Deskripsi:</strong> ${umkm.deskripsi || '-'}</p>
+        <p><strong>Alamat:</strong> ${umkm.alamat}</p>
+        <p><strong>Kecamatan:</strong> ${umkm.kecamatan}</p>
+        <p><strong>Kontak:</strong> <a href="https://wa.me/${umkm.kontak_wa}" target="_blank">${umkm.kontak_wa}</a></p>
+      </div>
+      <div>
+        <iframe width="100%" height="200" frameborder="0" style="border:0"
+          src="https://www.google.com/maps?q=${umkm.latitude},${umkm.longitude}&hl=id&z=15&output=embed" allowfullscreen>
+        </iframe>
+      </div>
     </div>
-  </header>
+  `;
 
-  <section id="umkm-profil" class="umkm-info">
-    <!-- konten profil akan diisi oleh JS -->
-  </section>
+  const produkUMKM = produkData.filter(p => p.id_umkm === idUMKM && p.status === "aktif");
+  const container = document.getElementById("umkm-produk");
+  container.innerHTML = produkUMKM.map(p => {
+    const isFav = keranjang.includes(p.id_produk);
+    return `
+      <div class="produk-card">
+        <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
+          <img src="${p.gambar_url}" alt="${p.nama_produk}" />
+        </div>
+        <div class="produk-info">
+          <h3 class="produk-nama">${p.nama_produk}</h3>
+          <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
+          <div class="produk-actions">
+            <button class="btn-wa" onclick="window.open('https://wa.me/${umkm.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}', '_blank')">Pesan via WA</button>
+            <button class="btn-fav ${isFav ? 'selected' : ''}" onclick="toggleFav('${p.id_produk}', this)">${isFav ? '🛒 Hapus' : '➕ Keranjang'}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
 
-  <h2 style="margin: 1rem">Produk UMKM Ini:</h2>
-  <main id="umkm-produk" class="produk-grid"></main>
+  updateCartIcon();
 
-  <!-- Review Pesanan sebagai Popup Tengah -->
-  <section id="review-section">
-    <button id="review-close">&times;</button>
-    <h3>Review Pesanan Anda</h3>
-    <table id="review-table">
-      <thead>
-        <tr>
-          <th>Produk</th>
-          <th>Jumlah</th>
-          <th>Harga</th>
-          <th>Total</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- baris pesanan akan di-generate lewat JS -->
-      </tbody>
-    </table>
-    <div class="review-actions">
-      <button id="send-wa-btn"><i class="fab fa-whatsapp"></i> Kirim ke WA</button>
-    </div>
-  </section>
+  window.toggleFav = function(id, el) {
+    if (keranjang.includes(id)) {
+      keranjang = keranjang.filter(i => i !== id);
+      el.classList.remove('selected');
+      el.innerText = '➕ Keranjang';
+    } else {
+      keranjang.push(id);
+      el.classList.add('selected');
+      el.innerText = '🛒 Hapus';
+    }
+    updateCartIcon();
+  };
 
-  <!-- Modal detail produk -->
-  <div id="produk-modal" class="modal">
-    <div class="modal-content">
-      <span id="modal-close">&times;</span>
-      <img class="modal-gambar" src="" alt="gambar produk" />
-      <h3 class="modal-nama"></h3>
-      <p class="modal-deskripsi"></p>
-      <p class="modal-harga"></p>
-    </div>
-  </div>
-
-  <!-- Keranjang mengambang -->
-  <div id="floating-cart">
-    <i class="fas fa-shopping-cart"></i>
-    <span id="cart-count">0</span>
-  </div>
-
-  <script>
-    const reviewSection = document.getElementById("review-section");
-    document.getElementById("floating-cart").onclick = () => {
-      reviewSection.classList.add("active");
+  window.showDetail = function(nama, deskripsi, gambar, harga) {
+    const modal = document.getElementById("produk-modal");
+    modal.querySelector(".modal-nama").innerText = nama;
+    modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
+    modal.querySelector(".modal-gambar").src = gambar;
+    modal.querySelector(".modal-harga").innerText = "Rp " + harga;
+    modal.querySelector(".modal-gambar").onclick = function () {
+      this.classList.toggle("zoomed");
     };
-    document.getElementById("review-close").onclick = () => {
-      reviewSection.classList.remove("active");
-    };
-  </script>
-  <script src="assets/umkm.js"></script>
-</body>
-</html>
+    modal.style.display = "flex";
+  };
+
+  document.getElementById("modal-close").onclick = () => {
+    document.getElementById("produk-modal").style.display = "none";
+  };
+
+  function updateCartIcon() {
+    const icon = document.getElementById("floating-cart");
+    const count = document.getElementById("cart-count");
+    if (keranjang.length > 0) {
+      icon.style.display = "flex";
+      count.innerText = keranjang.length;
+    } else {
+      icon.style.display = "none";
+    }
+  }
+
+  function renderReview() {
+    const tbody = document.querySelector("#review-table tbody");
+    tbody.innerHTML = "";
+    let totalHarga = 0;
+    keranjang.forEach(id => {
+      const p = produkUMKM.find(pr => pr.id_produk === id);
+      const harga = parseInt(p.harga);
+      totalHarga += harga;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${p.nama_produk}</td>
+        <td>1</td>
+        <td>Rp ${harga.toLocaleString()}</td>
+        <td>Rp ${harga.toLocaleString()}</td>
+        <td><button onclick="removeFromCart('${p.id_produk}')">Hapus</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  window.removeFromCart = function(id) {
+    keranjang = keranjang.filter(i => i !== id);
+    updateCartIcon();
+    renderReview();
+    document.querySelector(`button[onclick*="toggleFav('${id}"]`).classList.remove("selected");
+    document.querySelector(`button[onclick*="toggleFav('${id}"]`).innerText = '➕ Keranjang';
+  };
+
+  document.getElementById("floating-cart").addEventListener("click", () => {
+    document.getElementById("review-section").classList.add("active");
+    renderReview();
+  });
+
+  document.getElementById("review-close").addEventListener("click", () => {
+    document.getElementById("review-section").classList.remove("active");
+  });
+
+  document.getElementById("send-wa-btn").addEventListener("click", () => {
+    if (!keranjang.length) return;
+    const pesan = keranjang.map(id => {
+      const p = produkUMKM.find(pr => pr.id_produk === id);
+      return `- ${p.nama_produk} (Rp ${parseInt(p.harga).toLocaleString()})`;
+    }).join("%0A");
+    window.open(`https://wa.me/${umkm.kontak_wa}?text=Halo,%20saya%20tertarik%20dengan%20produk:%0A${pesan}`, '_blank');
+  });
+
+}).catch(err => console.error("Gagal load UMKM:", err));
+
+function switchView(mode) {
+  const container = document.getElementById("umkm-produk");
+  if (mode === 'grid') {
+    container.classList.remove("list-mode");
+  } else {
+    container.classList.add("list-mode");
+  }
+}
