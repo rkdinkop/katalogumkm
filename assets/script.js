@@ -1,4 +1,4 @@
-const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE"; // ganti sesuai spreadsheet kamu
+const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
 let keranjang = [];
 
 Promise.all([
