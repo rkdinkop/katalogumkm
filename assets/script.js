@@ -40,7 +40,7 @@ Promise.all([
 
     produkList.innerHTML = hasil.map(p => {
       const u = umkm.find(u => u.id_umkm === p.id_umkm);
-      const favClass = keranjang.includes(p.id_produk) ? 'selected' : '';
+      const isFav = keranjang.includes(p.id_produk);
       return `
         <div class="produk-card">
           <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
@@ -53,7 +53,7 @@ Promise.all([
             <div class="produk-actions">
               <a href="umkm.html?id=${u?.id_umkm}" class="btn-detail">Lihat UMKM</a>
               <button class="btn-wa" onclick="window.open('https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}', '_blank')">Pesan via WA</button>
-              <button class="btn-fav ${favClass}" onclick="toggleFav('${p.id_produk}', this)">❤️</button>
+              <button class="btn-fav ${isFav ? 'selected' : ''}" onclick="toggleFav('${p.id_produk}', this)">${isFav ? '🛒 Hapus' : '➕ Keranjang'}</button>
             </div>
           </div>
         </div>
@@ -65,9 +65,11 @@ Promise.all([
     if (keranjang.includes(id)) {
       keranjang = keranjang.filter(i => i !== id);
       el.classList.remove('selected');
+      el.innerText = '➕ Keranjang';
     } else {
       keranjang.push(id);
       el.classList.add('selected');
+      el.innerText = '🛒 Hapus';
     }
     console.log("Keranjang:", keranjang);
   }
@@ -85,13 +87,15 @@ Promise.all([
     document.getElementById("produk-modal").style.display = "none";
   };
 
-  document.getElementById("checkout-btn").onclick = () => {
-    if (keranjang.length === 0) return alert("Pilih minimal 1 produk dulu.");
-    const produkTerpilih = produk.filter(p => keranjang.includes(p.id_produk));
-    let pesan = "Halo, saya tertarik dengan produk berikut:%0A" + produkTerpilih.map(p => `- ${p.nama_produk}`).join("%0A");
-    const wa = umkm.find(u => u.id_umkm === produkTerpilih[0].id_umkm)?.kontak_wa || '';
-    window.open(`https://wa.me/${wa}?text=${pesan}`, '_blank');
-  };
+  if (document.getElementById("checkout-btn")) {
+    document.getElementById("checkout-btn").onclick = () => {
+      if (keranjang.length === 0) return alert("Pilih minimal 1 produk dulu.");
+      const produkTerpilih = produk.filter(p => keranjang.includes(p.id_produk));
+      let pesan = "Halo, saya tertarik dengan produk berikut:%0A" + produkTerpilih.map(p => `- ${p.nama_produk}`).join("%0A");
+      const wa = umkm.find(u => u.id_umkm === produkTerpilih[0].id_umkm)?.kontak_wa || '';
+      window.open(`https://wa.me/${wa}?text=${pesan}`, '_blank');
+    };
+  }
 
   renderProduk();
   searchInput.addEventListener("input", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
