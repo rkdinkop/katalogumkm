@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detail Produk</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="produk-detail"></div>
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const produkId = urlParams.get('id');
-    // fetch dan render produk berdasarkan id
-  </script>
+  <header class="main-header">
+    <h1>Detail Produk</h1>
+  </header>
+
+  <main id="produk-detail" class="produk-detail-container">
+    <!-- Isi dinamis oleh JS -->
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Katalog UMKM Lamongan</p>
+  </footer>
+
+  <script src="produk.js"></script>
 </body>
 </html>
