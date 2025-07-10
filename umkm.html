@@ -5,25 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil UMKM</title>
   <link rel="stylesheet" href="assets/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
   <header class="main-header">
     <h1>Profil UMKM</h1>
-    <div style="margin-top: 1rem">
-      <button onclick="switchView('grid')"><i class="fas fa-th"></i></button>
-      <button onclick="switchView('list')"><i class="fas fa-bars"></i></button>
+    <div class="view-toggle">
+      <button onclick="switchView('grid')" title="Tampilan Thumbnail"><i class="fas fa-th"></i></button>
+      <button onclick="switchView('list')" title="Tampilan List"><i class="fas fa-bars"></i></button>
     </div>
   </header>
 
-  <section id="umkm-profil" class="umkm-info" style="padding: 1rem; max-width: 900px; margin: auto; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-radius: 10px; display: flex; gap: 1rem;">
+  <section id="umkm-profil" class="umkm-info">
     <!-- konten profil akan diisi oleh JS -->
   </section>
 
   <h2 style="margin: 1rem">Produk UMKM Ini:</h2>
   <main id="umkm-produk" class="produk-grid"></main>
 
-  <button id="checkout-btn" class="btn-checkout"><i class="fas fa-shopping-cart"></i> Checkout</button>
+  <section id="review-section" class="review-section" style="display: none;">
+    <h3>Review Pesanan Anda</h3>
+    <table id="review-table">
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Jumlah</th>
+          <th>Harga</th>
+          <th>Total</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- baris pesanan akan di-generate lewat JS -->
+      </tbody>
+    </table>
+    <div class="review-actions">
+      <button id="send-wa-btn"><i class="fab fa-whatsapp"></i> Kirim ke WA</button>
+    </div>
+  </section>
 
   <!-- Modal detail produk -->
   <div id="produk-modal" class="modal">
