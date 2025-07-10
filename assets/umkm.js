@@ -17,7 +17,7 @@ Promise.all([
       <img src="${umkm.logo_url}" alt="${umkm.nama_umkm}" class="umkm-logo" />
       <div class="umkm-meta">
         <h2>${umkm.nama_umkm}</h2>
-        <p><strong>Deskripsi:</strong> ${umkm.deskripsi || '-'}</p>
+        <p><strong>Deskripsi:</strong> ${umkm.deskripsi_produk || '-'}</p>
         <p><strong>Alamat:</strong> ${umkm.alamat}</p>
         <p><strong>Kecamatan:</strong> ${umkm.kecamatan}</p>
         <p><strong>Kontak:</strong> <a href="https://wa.me/${umkm.kontak_wa}" target="_blank">${umkm.kontak_wa}</a></p>
