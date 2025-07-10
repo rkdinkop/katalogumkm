@@ -18,7 +18,7 @@ Promise.all([
 
   produkUMKM = produk.filter(p => p.id_umkm === umkmId && p.status === "aktif");
 
-  const produkUMKM = produk.filter(p => p.id_umkm === umkmId && p.status === "aktif");
+  //const produkUMKM = produk.filter(p => p.id_umkm === umkmId && p.status === "aktif");
 
   // Tampilkan profil UMKM
   document.getElementById("umkm-profil").innerHTML = `
