@@ -43,13 +43,19 @@ Promise.all([
     produkList.innerHTML = hasil.map(p => {
       const u = umkm.find(u => u.id_umkm === p.id_umkm);
       return `
-        <div class="produk-item">
-          <img src="${p.gambar_url}" alt="${p.nama_produk}" width="100%" />
-          <h3>${p.nama_produk}</h3>
-          <p>Rp ${parseInt(p.harga).toLocaleString()}</p>
-          <p><strong>${u?.nama_umkm || "UMKM"}</strong> - ${p.kecamatan}</p>
-          <a href="umkm.html?id=${u?.id_umkm}" target="_blank">Lihat UMKM</a><br>
-          <a href="https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" target="_blank">Pesan via WA</a>
+        <div class="produk-card">
+          <div class="produk-img">
+            <img src="${p.gambar_url}" alt="${p.nama_produk}" />
+          </div>
+          <div class="produk-info">
+            <h3 class="produk-nama">${p.nama_produk}</h3>
+            <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
+            <p class="produk-umkm">${u?.nama_umkm || "UMKM"} - ${p.kecamatan}</p>
+            <div class="produk-actions">
+              <a href="umkm.html?id=${u?.id_umkm}" class="btn-detail">Lihat UMKM</a>
+              <a href="https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" class="btn-wa" target="_blank">Pesan via WA</a>
+            </div>
+          </div>
         </div>
       `;
     }).join("");
@@ -67,3 +73,4 @@ Promise.all([
 .catch(error => {
   console.error("Gagal memuat data dari Google Sheets:", error);
 });
+
