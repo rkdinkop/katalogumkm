@@ -43,7 +43,7 @@ Promise.all([
       const favClass = keranjang.includes(p.id_produk) ? 'selected' : '';
       return `
         <div class="produk-card">
-          <div class="produk-img" onclick="showDetail('${p.nama_produk}', '${p.deskripsi}', '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
+          <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
             <img src="${p.gambar_url}" alt="${p.nama_produk}" />
           </div>
           <div class="produk-info">
@@ -75,10 +75,10 @@ Promise.all([
   window.showDetail = function(nama, deskripsi, gambar, harga) {
     const modal = document.getElementById("produk-modal");
     modal.querySelector(".modal-nama").innerText = nama;
-    modal.querySelector(".modal-deskripsi").innerText = deskripsi;
+    modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
     modal.querySelector(".modal-gambar").src = gambar;
     modal.querySelector(".modal-harga").innerText = "Rp " + harga;
-    modal.style.display = "block";
+    modal.style.display = "flex";
   }
 
   document.getElementById("modal-close").onclick = () => {
@@ -89,10 +89,10 @@ Promise.all([
     if (keranjang.length === 0) return alert("Pilih minimal 1 produk dulu.");
     const produkTerpilih = produk.filter(p => keranjang.includes(p.id_produk));
     let pesan = "Halo, saya tertarik dengan produk berikut:%0A" + produkTerpilih.map(p => `- ${p.nama_produk}`).join("%0A");
-    window.open(`https://wa.me/${produkTerpilih[0].kontak_wa}?text=${pesan}`, '_blank');
+    const wa = umkm.find(u => u.id_umkm === produkTerpilih[0].id_umkm)?.kontak_wa || '';
+    window.open(`https://wa.me/${wa}?text=${pesan}`, '_blank');
   };
 
-  // Render awal
   renderProduk();
   searchInput.addEventListener("input", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
   filterKategori.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
@@ -102,5 +102,4 @@ Promise.all([
 .catch(error => {
   console.error("Gagal memuat data dari Google Sheets:", error);
 });
-
 
