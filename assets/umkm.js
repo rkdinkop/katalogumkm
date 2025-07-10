@@ -33,19 +33,21 @@ Promise.all([
 
   // Tampilkan produk milik UMKM
    document.getElementById("umkm-produk").innerHTML = produkUMKM.map(p => `
-    <div class="produk-card">
-      <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
-        <img src="${p.gambar_url}" alt="${p.nama_produk}" />
-      </div>
-      <div class="produk-info">
-        <h3 class="produk-nama">${p.nama_produk}</h3>
-        <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
-        <div class="produk-actions">
-          <a href="https://wa.me/${data.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" class="btn-wa" target="_blank">Pesan via WA</a>
-        </div>
+  <div class="produk-card">
+    <div class="produk-img" onclick='showDetail(${JSON.stringify(p.nama_produk)}, ${JSON.stringify(p.deskripsi)}, "${p.gambar_url}", "${parseInt(p.harga).toLocaleString()}")'>
+      <img src="${p.gambar_url}" alt="${p.nama_produk}" />
+    </div>
+    <div class="produk-info">
+      <h3 class="produk-nama">${p.nama_produk}</h3>
+      <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
+      <div class="produk-actions">
+        <button onclick="toggleKeranjang('${p.id_produk}', this)">➕ Keranjang</button>
+        <a href="https://wa.me/${data.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" class="btn-wa" target="_blank">Pesan via WA</a>
       </div>
     </div>
-  `).join('');
+  </div>
+`).join('');
+
 })
 .catch(err => {
   console.error("Gagal memuat data UMKM:", err);
