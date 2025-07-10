@@ -2,16 +2,21 @@ const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsa
 const urlParams = new URLSearchParams(window.location.search);
 const umkmId = urlParams.get("id");
 
+let produkUMKM = [];
+let dataUMKM = {};
+
 Promise.all([
   fetch(`${sheetBase}/umkm`).then(res => res.json()),
   fetch(`${sheetBase}/produk`).then(res => res.json())
 ])
 .then(([umkm, produk]) => {
-  const data = umkm.find(u => u.id_umkm === umkmId);
-  if (!data) {
+  dataUMKM = umkm.find(u => u.id_umkm === umkmId);
+  if (!dataUMKM) {
     document.getElementById("umkm-profil").innerHTML = "<p>UMKM tidak ditemukan.</p>";
     return;
   }
+
+  produkUMKM = produk.filter(p => p.id_umkm === umkmId && p.status === "aktif");
 
   const produkUMKM = produk.filter(p => p.id_umkm === umkmId && p.status === "aktif");
 
