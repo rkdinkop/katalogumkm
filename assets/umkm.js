@@ -2,6 +2,62 @@ const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsa
 const urlParams = new URLSearchParams(window.location.search);
 const umkmId = urlParams.get("id");
 
+let keranjang = [];
+
+function toggleKeranjang(id, btn) {
+  const index = keranjang.indexOf(id);
+  if (index >= 0) {
+    keranjang.splice(index, 1);
+    btn.innerText = '➕ Keranjang';
+  } else {
+    keranjang.push(id);
+    btn.innerText = '🛒 Hapus';
+  }
+  console.log('Keranjang:', keranjang);
+}
+
+function openCheckout(produk, umkm) {
+  if (keranjang.length === 0) return alert('Belum ada produk dalam keranjang.');
+
+  const container = document.getElementById("checkout-items");
+  container.innerHTML = '';
+
+  keranjang.forEach(id => {
+    const item = produk.find(p => p.id_produk === id);
+    container.innerHTML += `
+      <div class="checkout-item" data-id="${id}">
+        <p><strong>${item.nama_produk}</strong></p>
+        <label>Jumlah: <input type="number" min="1" value="1" class="checkout-qty" /></label>
+        <button onclick="removeCheckoutItem('${id}')">Hapus</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("checkout-modal").style.display = "flex";
+
+  document.getElementById("checkout-confirm").onclick = () => {
+    const items = Array.from(document.querySelectorAll(".checkout-item"));
+    const pesan = items.map(i => {
+      const nama = i.querySelector("strong").innerText;
+      const qty = i.querySelector("input").value;
+      return `- ${nama} x ${qty}`;
+    }).join("%0A");
+
+    const wa = umkm.kontak_wa;
+    window.open(`https://wa.me/${wa}?text=Halo,%20saya%20ingin%20memesan:%0A${pesan}`, '_blank');
+    document.getElementById("checkout-modal").style.display = "none";
+  };
+}
+
+window.removeCheckoutItem = function(id) {
+  keranjang = keranjang.filter(i => i !== id);
+  document.querySelector(`.checkout-item[data-id=\"${id}\"]`)?.remove();
+};
+
+document.getElementById("checkout-close").onclick = () => {
+  document.getElementById("checkout-modal").style.display = \"none\";
+};
+
 Promise.all([
   fetch(`${sheetBase}/umkm`).then(res => res.json()),
   fetch(`${sheetBase}/produk`).then(res => res.json())
