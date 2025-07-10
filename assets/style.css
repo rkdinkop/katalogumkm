@@ -267,3 +267,20 @@
   height: 120px;
 }
 
+.checkout-item {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0.5rem;
+}
+
+.checkout-item input[type=number] {
+  width: 60px;
+  margin-left: 0.5rem;
+}
+
+#checkout-modal .modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
