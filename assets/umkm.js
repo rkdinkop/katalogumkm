@@ -92,7 +92,7 @@ Promise.all([
     window.open(`https://wa.me/${umkm.kontak_wa}?text=Halo,%20saya%20tertarik%20membeli:%0A${pesan}`, '_blank');
   };
 
-  tampilkanReview();
+  //tampilkanReview();
   updateKeranjangIcon();
 
 }).catch(err => console.error("Gagal load UMKM:", err));
@@ -126,13 +126,13 @@ function tampilkanReview() {
 
 function updateJumlah(index, value) {
   keranjang[index].jumlah = parseInt(value);
-  tampilkanReview();
+  //tampilkanReview();
   updateKeranjangIcon();
 }
 
 function hapusItem(index) {
   keranjang.splice(index, 1);
-  tampilkanReview();
+  //tampilkanReview();
   updateKeranjangIcon();
 }
 
