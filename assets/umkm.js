@@ -2,6 +2,7 @@ const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsa
 const urlParams = new URLSearchParams(window.location.search);
 const idUMKM = urlParams.get("id");
 let keranjang = [];
+let keranjangQty = {}; // { id_produk: jumlah }
 
 Promise.all([
   fetch(`${sheetBase}/umkm`).then(res => res.json()),
@@ -53,17 +54,20 @@ Promise.all([
   updateCartIcon();
 
   window.toggleFav = function(id, el) {
-    if (keranjang.includes(id)) {
-      keranjang = keranjang.filter(i => i !== id);
-      el.classList.remove('selected');
-      el.innerText = '➕ Keranjang';
-    } else {
-      keranjang.push(id);
-      el.classList.add('selected');
-      el.innerText = '🛒 Hapus';
-    }
-    updateCartIcon();
-  };
+  if (keranjang.includes(id)) {
+    keranjang = keranjang.filter(i => i !== id);
+    delete keranjangQty[id]; // hapus jumlahnya juga
+    el.classList.remove('selected');
+    el.innerText = '➕ Keranjang';
+  } else {
+    keranjang.push(id);
+    keranjangQty[id] = 1; // default qty 1
+    el.classList.add('selected');
+    el.innerText = '🛒 Hapus';
+  }
+  updateCartIcon();
+};
+
 
   window.showDetail = function(nama, deskripsi, gambar, harga) {
     const modal = document.getElementById("produk-modal");
@@ -94,32 +98,56 @@ Promise.all([
   }
 
   function renderReview() {
-    const tbody = document.querySelector("#review-table tbody");
-    tbody.innerHTML = "";
-    let totalHarga = 0;
-    keranjang.forEach(id => {
-      const p = produkUMKM.find(pr => pr.id_produk === id);
-      const harga = parseInt(p.harga);
-      totalHarga += harga;
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${p.nama_produk}</td>
-        <td>1</td>
-        <td>Rp ${harga.toLocaleString()}</td>
-        <td>Rp ${harga.toLocaleString()}</td>
-        <td><button onclick="removeFromCart('${p.id_produk}')">Hapus</button></td>
-      `;
-      tbody.appendChild(row);
-    });
+  const tbody = document.querySelector("#review-table tbody");
+  tbody.innerHTML = "";
+  let totalHarga = 0;
+
+  keranjang.forEach(id => {
+    const p = produkUMKM.find(pr => pr.id_produk === id);
+    const qty = keranjangQty[id] || 1;
+    const harga = parseInt(p.harga);
+    const total = qty * harga;
+    totalHarga += total;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${p.nama_produk}</td>
+      <td>
+        <button onclick="ubahQty('${id}', -1)">-</button>
+        <span>${qty}</span>
+        <button onclick="ubahQty('${id}', 1)">+</button>
+      </td>
+      <td>Rp ${harga.toLocaleString()}</td>
+      <td>Rp ${total.toLocaleString()}</td>
+      <td><button onclick="removeFromCart('${id}')">🗑️</button></td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+  window.ubahQty = function(id, delta) {
+  if (!(id in keranjangQty)) return;
+  keranjangQty[id] += delta;
+  if (keranjangQty[id] <= 0) {
+    removeFromCart(id);
+  } else {
+    renderReview();
   }
+};
+  
 
   window.removeFromCart = function(id) {
-    keranjang = keranjang.filter(i => i !== id);
-    updateCartIcon();
-    renderReview();
-    document.querySelector(`button[onclick*="toggleFav('${id}"]`).classList.remove("selected");
-    document.querySelector(`button[onclick*="toggleFav('${id}"]`).innerText = '➕ Keranjang';
-  };
+  keranjang = keranjang.filter(i => i !== id);
+  delete keranjangQty[id];
+  updateCartIcon();
+  renderReview();
+
+  const toggleBtn = document.querySelector(`button[onclick*="toggleFav('${id}"]`);
+  if (toggleBtn) {
+    toggleBtn.classList.remove("selected");
+    toggleBtn.innerText = '➕ Keranjang';
+  }
+};
 
   document.getElementById("floating-cart").addEventListener("click", () => {
   document.getElementById("review-section").classList.add("active");
