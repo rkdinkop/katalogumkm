@@ -25,18 +25,26 @@ Promise.all([
 
   // Referensi elemen pencarian dan daftar produk
   const searchInput = document.getElementById("search");
+  const filterKategori = document.getElementById("filter-kategori");
+  const filterKecamatan = document.getElementById("filter-kecamatan");
   const produkList = document.getElementById("produk-list");
 
-  // Fungsi render produk
-  function renderProduk(keyword = "") {
+  // Generate dropdown filter kategori dan kecamatan
+  const semuaKategori = [...new Set(produk.map(p => p.kategori).filter(k => k))];
+  const semuaKecamatan = [...new Set(produk.map(p => p.kecamatan).filter(k => k))];
+
+  filterKategori.innerHTML = '<option value="">Semua Kategori</option>' + semuaKategori.map(k => `<option value="${k}">${k}</option>`).join('');
+  filterKecamatan.innerHTML = '<option value="">Semua Kecamatan</option>' + semuaKecamatan.map(k => `<option value="${k}">${k}</option>`).join('');
+
+  function renderProduk(keyword = "", kategori = "", kecamatan = "") {
     const hasil = produk.filter(p => {
-      const umkmData = umkm.find(u => u.id_umkm === p.id_umkm);
+      const u = umkm.find(u => u.id_umkm === p.id_umkm);
       return (
         p.status === "aktif" &&
-        (
-          p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) ||
-          umkmData?.nama_umkm.toLowerCase().includes(keyword.toLowerCase())
-        )
+        (p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) ||
+         u?.nama_umkm.toLowerCase().includes(keyword.toLowerCase())) &&
+        (kategori ? p.kategori === kategori : true) &&
+        (kecamatan ? p.kecamatan === kecamatan : true)
       );
     });
 
@@ -64,9 +72,17 @@ Promise.all([
   // Render awal
   renderProduk();
 
-  // Event pencarian
-  searchInput.addEventListener("input", (e) => {
-    renderProduk(e.target.value);
+  // Event pencarian & filter
+  searchInput.addEventListener("input", () => {
+    renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value);
+  });
+
+  filterKategori.addEventListener("change", () => {
+    renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value);
+  });
+
+  filterKecamatan.addEventListener("change", () => {
+    renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value);
   });
 
 })
