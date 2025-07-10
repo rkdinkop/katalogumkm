@@ -63,6 +63,16 @@ Promise.all([
   }
 }
 
+function showDetail(nama, deskripsi, gambar, harga) {
+  const modal = document.getElementById("produk-modal");
+  modal.querySelector(".modal-nama").innerText = nama;
+  modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
+  modal.querySelector(".modal-gambar").src = gambar;
+  modal.querySelector(".modal-harga").innerText = "Rp " + harga;
+  modal.style.display = "flex";
+}
+
+
 let keranjang = [];
 
 function toggleKeranjang(id, btn) {
