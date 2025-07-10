@@ -63,12 +63,25 @@ body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; }
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
+
+.produk-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f1f1f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .produk-img img {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 6px;
+  transition: transform 0.3s ease;
 }
+
 .produk-nama {
   font-size: 1rem;
   font-weight: bold;
@@ -149,6 +162,13 @@ body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; }
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 1rem;
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
+}
+
+.modal-gambar.zoomed {
+  transform: scale(2);
+  cursor: zoom-out;
 }
 .modal-deskripsi {
   font-size: 0.95rem;
@@ -179,4 +199,8 @@ body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; }
   width: 120px;
   height: 120px;
   object-fit: cover;
+}
+
+.produk-img:hover img {
+  transform: scale(1.05);
 }
