@@ -1,49 +1,47 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Katalog UMKM Lamongan</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="logo">UMKM Lamongan</div>
-    <div class="search-bar">
-      <input type="text" id="search" placeholder="Cari produk atau UMKM...">
-    </div>
+  <header class="main-header">
+    <h1 id="site-title">Katalog UMKM</h1>
+    <input type="text" id="search" placeholder="Cari produk atau UMKM...">
   </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Temukan Produk Terbaik UMKM Lamongan</h1>
-      <p>Dari berbagai kategori dan kecamatan</p>
+  <section class="hero-banner">
+    <div class="hero-text">
+      <h2>Dukung Produk Lokal Lamongan</h2>
+      <p>Temukan produk unggulan dari UMKM terbaik</p>
     </div>
   </section>
 
-  <section class="filter-bar">
+  <div class="filter-bar">
     <select id="filter-kategori"></select>
     <select id="filter-kecamatan"></select>
-  </section>
+  </div>
 
-  <section class="produk-section">
-    <h2>Produk Terbaru</h2>
-    <div id="produk-list" class="produk-grid"></div>
-  </section>
+  <main id="produk-list" class="produk-grid"></main>
 
+  <button id="checkout-btn" class="btn-checkout" style="display: none;">Checkout via WA</button>
+
+  <footer>
+    <p id="footer-text"></p>
+  </footer>
+
+  <!-- Modal detail produk -->
   <div id="produk-modal" class="modal">
     <div class="modal-content">
       <span id="modal-close">&times;</span>
       <img class="modal-gambar" src="" alt="gambar produk" />
       <h3 class="modal-nama"></h3>
-      <p class="modal-harga"></p>
       <p class="modal-deskripsi"></p>
+      <p class="modal-harga"></p>
     </div>
   </div>
-
-  <footer>
-    <p id="footer-text">&copy; 2025 Katalog UMKM Lamongan</p>
-  </footer>
 
   <script src="script.js"></script>
 </body>
