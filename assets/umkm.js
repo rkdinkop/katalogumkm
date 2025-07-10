@@ -32,16 +32,7 @@ Promise.all([
   `;
 
   // Tampilkan produk milik UMKM
-  function switchView(mode) {
-  const container = document.getElementById("umkm-produk");
-  if (mode === 'grid') {
-    container.classList.remove("list-mode");
-  } else {
-    container.classList.add("list-mode");
-  }
-}
-
-  document.getElementById("umkm-produk").innerHTML = produkUMKM.map(p => `
+   document.getElementById("umkm-produk").innerHTML = produkUMKM.map(p => `
     <div class="produk-card">
       <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
         <img src="${p.gambar_url}" alt="${p.nama_produk}" />
@@ -60,3 +51,12 @@ Promise.all([
   console.error("Gagal memuat data UMKM:", err);
   document.getElementById("umkm-profil").innerHTML = "<p>Terjadi kesalahan memuat data UMKM.</p>";
 });
+
+ function switchView(mode) {
+  const container = document.getElementById("umkm-produk");
+  if (mode === 'grid') {
+    container.classList.remove("list-mode");
+  } else {
+    container.classList.add("list-mode");
+  }
+}
