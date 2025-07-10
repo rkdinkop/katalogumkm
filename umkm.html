@@ -16,15 +16,17 @@
     <button onclick="switchView('list')">Tampilan List</button>
   </div>
   <div id="umkm-produk" class="produk-grid"></div>
-  <script src="assets/umkm.js"></script>
-  <div id="checkout-modal" class="modal">
-    <div class="modal-content">
-      <span id="checkout-close">&times;</span>
-      <h3>Keranjang Checkout</h3>
-      <div id="checkout-items"></div>
-      <button id="checkout-confirm" class="btn-checkout">Lanjut ke WhatsApp</button>
-    </div>
+  
+
+    <!-- Tambahkan sebelum </body> -->
+<div id="checkout-modal" class="modal">
+  <div class="modal-content">
+    <span id="checkout-close">&times;</span>
+    <h3>Keranjang Checkout</h3>
+    <div id="checkout-items"></div>
+    <button id="checkout-confirm" class="btn-checkout">Lanjut ke WhatsApp</button>
   </div>
+</div>
 
 <div id="produk-modal" class="modal">
   <div class="modal-content">
@@ -36,5 +38,6 @@
   </div>
 </div>
 <button onclick="openCheckout(produkUMKM, data)" class="btn-checkout">🛒 Review & Checkout</button>
+<script src="assets/umkm.js"></script>
 </body>
 </html>
