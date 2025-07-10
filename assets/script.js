@@ -1,7 +1,5 @@
-const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
 let keranjang = [];
 
-// Fetch data dari semua sheet yang dibutuhkan
 Promise.all([
   fetch(`${sheetBase}/produk`).then(res => res.json()),
   fetch(`${sheetBase}/umkm`).then(res => res.json()),
@@ -9,10 +7,8 @@ Promise.all([
 ])
 .then(([produk, umkm, pengaturan]) => {
   if (Array.isArray(pengaturan)) {
-    const siteTitle = pengaturan.find(p => p.key === 'site_title')?.value || "Katalog UMKM";
-    const footerText = pengaturan.find(p => p.key === 'text_footer')?.value || "";
-    document.getElementById("site-title").innerText = siteTitle;
-    document.getElementById("footer-text").innerText = footerText;
+    document.getElementById("site-title").innerText = pengaturan.find(p => p.key === 'site_title')?.value || "Katalog UMKM";
+    document.getElementById("footer-text").innerText = pengaturan.find(p => p.key === 'text_footer')?.value || "";
   }
 
   const searchInput = document.getElementById("search");
@@ -20,8 +16,8 @@ Promise.all([
   const filterKecamatan = document.getElementById("filter-kecamatan");
   const produkList = document.getElementById("produk-list");
 
-  const semuaKategori = [...new Set(produk.map(p => p.kategori).filter(k => k))];
-  const semuaKecamatan = [...new Set(produk.map(p => p.kecamatan).filter(k => k))];
+  const semuaKategori = [...new Set(produk.map(p => p.kategori).filter(Boolean))];
+  const semuaKecamatan = [...new Set(produk.map(p => p.kecamatan).filter(Boolean))];
 
   filterKategori.innerHTML = '<option value="">Semua Kategori</option>' + semuaKategori.map(k => `<option value="${k}">${k}</option>`).join('');
   filterKecamatan.innerHTML = '<option value="">Semua Kecamatan</option>' + semuaKecamatan.map(k => `<option value="${k}">${k}</option>`).join('');
@@ -31,8 +27,7 @@ Promise.all([
       const u = umkm.find(u => u.id_umkm === p.id_umkm);
       return (
         p.status === "aktif" &&
-        (p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) ||
-         u?.nama_umkm.toLowerCase().includes(keyword.toLowerCase())) &&
+        (p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) || u?.nama_umkm.toLowerCase().includes(keyword.toLowerCase())) &&
         (kategori ? p.kategori === kategori : true) &&
         (kecamatan ? p.kecamatan === kecamatan : true)
       );
@@ -53,12 +48,12 @@ Promise.all([
             <div class="produk-actions">
               <a href="umkm.html?id=${u?.id_umkm}" class="btn-detail">Lihat UMKM</a>
               <button class="btn-wa" onclick="window.open('https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}', '_blank')">Pesan via WA</button>
-              
+              <button class="btn-fav ${isFav ? 'selected' : ''}" onclick="toggleFav('${p.id_produk}', this)">${isFav ? '🛒 Hapus' : '➕ Keranjang'}</button>
             </div>
           </div>
         </div>
       `;
-    }).join("");
+    }).join('');
   }
 
   window.toggleFav = function(id, el) {
@@ -85,25 +80,13 @@ Promise.all([
 
   document.getElementById("modal-close").onclick = () => {
     document.getElementById("produk-modal").style.display = "none";
-  };
-
-  if (document.getElementById("checkout-btn")) {
-    document.getElementById("checkout-btn").onclick = () => {
-      if (keranjang.length === 0) return alert("Pilih minimal 1 produk dulu.");
-      const produkTerpilih = produk.filter(p => keranjang.includes(p.id_produk));
-      let pesan = "Halo, saya tertarik dengan produk berikut:%0A" + produkTerpilih.map(p => `- ${p.nama_produk}`).join("%0A");
-      const wa = umkm.find(u => u.id_umkm === produkTerpilih[0].id_umkm)?.kontak_wa || '';
-      window.open(`https://wa.me/${wa}?text=${pesan}`, '_blank');
-    };
   }
 
   renderProduk();
   searchInput.addEventListener("input", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
   filterKategori.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
   filterKecamatan.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
-
 })
 .catch(error => {
   console.error("Gagal memuat data dari Google Sheets:", error);
 });
-
