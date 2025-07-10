@@ -49,7 +49,7 @@ Promise.all([
             <div class="produk-actions">
               <a href="umkm.html?id=${u?.id_umkm}" class="btn-detail">Lihat UMKM</a>
               <button class="btn-wa" onclick="window.open('https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}', '_blank')">Pesan via WA</button>
-              <button class="btn-fav ${isFav ? 'selected' : ''}" onclick="toggleFav('${p.id_produk}', this)">${isFav ? '🛒 Hapus' : '➕ Keranjang'}</button>
+              
             </div>
           </div>
         </div>
