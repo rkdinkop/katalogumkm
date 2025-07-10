@@ -4,41 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil UMKM</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <body>
-  <div id="umkm-profil"></div>
-  <h3>Produk UMKM Ini:</h3>
-  
-  <div style="margin-bottom: 1rem;">
-    <button onclick="switchView('grid')">Tampilan Thumbnail</button>
-    <button onclick="switchView('list')">Tampilan List</button>
-  </div>
-  <div id="umkm-produk" class="produk-grid"></div>
-  
+  <header class="main-header">
+    <h1>Profil UMKM</h1>
+    <div style="margin-top: 1rem">
+      <button onclick="switchView('grid')">Tampilan Thumbnail</button>
+      <button onclick="switchView('list')">Tampilan List</button>
+    </div>
+  </header>
 
-    <!-- Tambahkan sebelum </body> -->
-<div id="checkout-modal" class="modal">
-  <div class="modal-content">
-    <span id="checkout-close">&times;</span>
-    <h3>Keranjang Checkout</h3>
-    <div id="checkout-items"></div>
-    <button id="checkout-confirm" class="btn-checkout">Lanjut ke WhatsApp</button>
-  </div>
-</div>
+  <section id="umkm-profil" class="umkm-info"></section>
 
-<div id="produk-modal" class="modal">
-  <div class="modal-content">
-    <span id="modal-close">&times;</span>
-    <img class="modal-gambar" src="" alt="gambar" />
-    <h3 class="modal-nama"></h3>
-    <p class="modal-harga"></p>
-    <div class="modal-deskripsi"></div>
-  </div>
-</div>
-<button onclick="openCheckout(produkUMKM, dataUMKM)">🛒 Review & Checkout</button>
+  <h2 style="margin: 1rem">Produk UMKM Ini:</h2>
+  <main id="umkm-produk" class="produk-grid"></main>
 
-<script src="assets/umkm.js"></script>
+  <button id="checkout-btn" class="btn-checkout">Checkout via WA</button>
+
+  <!-- Modal detail produk -->
+  <div id="produk-modal" class="modal">
+    <div class="modal-content">
+      <span id="modal-close">&times;</span>
+      <img class="modal-gambar" src="" alt="gambar produk" />
+      <h3 class="modal-nama"></h3>
+      <p class="modal-deskripsi"></p>
+      <p class="modal-harga"></p>
+    </div>
+  </div>
+
+  <script src="umkm.js"></script>
 </body>
 </html>
