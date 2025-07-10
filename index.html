@@ -1,38 +1,50 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Katalog UMKM Lamongan</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1 id="site-title">Katalog UMKM Lamongan</h1>
-    <div class="filter-bar">
-      <input type="text" id="search" placeholder="Cari produk atau UMKM..." />
-      <select id="filter-kategori"></select>
-      <select id="filter-kecamatan"></select>
+  <header class="site-header">
+    <div class="logo">UMKM Lamongan</div>
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Cari produk atau UMKM...">
     </div>
   </header>
 
-  <section id="produk-list"></section>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Temukan Produk Terbaik UMKM Lamongan</h1>
+      <p>Dari berbagai kategori dan kecamatan</p>
+    </div>
+  </section>
+
+  <section class="filter-bar">
+    <select id="filter-kategori"></select>
+    <select id="filter-kecamatan"></select>
+  </section>
+
+  <section class="produk-section">
+    <h2>Produk Terbaru</h2>
+    <div id="produk-list" class="produk-grid"></div>
+  </section>
+
   <div id="produk-modal" class="modal">
     <div class="modal-content">
       <span id="modal-close">&times;</span>
       <img class="modal-gambar" src="" alt="gambar produk" />
       <h3 class="modal-nama"></h3>
-      <p class="modal-deskripsi"></p>
       <p class="modal-harga"></p>
+      <p class="modal-deskripsi"></p>
     </div>
   </div>
-
-  <button id="checkout-btn" class="btn-checkout">Checkout via WA</button>
 
   <footer>
     <p id="footer-text">&copy; 2025 Katalog UMKM Lamongan</p>
   </footer>
 
-  <script src="assets/script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
