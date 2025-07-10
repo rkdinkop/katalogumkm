@@ -76,7 +76,10 @@ function toggleKeranjang(id, btn) {
 }
 
 function openCheckout(produk, umkm) {
-  if (keranjang.length === 0) return alert('Belum ada produk dalam keranjang.');
+  if (keranjang.length === 0) {
+    alert('Belum ada produk dalam keranjang.');
+    return;
+  }
 
   const container = document.getElementById("checkout-items");
   container.innerHTML = '';
@@ -103,16 +106,19 @@ function openCheckout(produk, umkm) {
     }).join("%0A");
 
     const wa = umkm.kontak_wa;
-    window.open(`https://wa.me/${wa}?text=Halo,%20saya%20ingin%20memesan:%0A${pesan}`, '_blank');
+    const url = `https://wa.me/${wa}?text=Halo,%20saya%20ingin%20memesan:%0A${pesan}`;
+    window.open(url, '_blank');
     document.getElementById("checkout-modal").style.display = "none";
   };
 }
 
 window.removeCheckoutItem = function(id) {
   keranjang = keranjang.filter(i => i !== id);
-  document.querySelector(`.checkout-item[data-id=\"${id}\"]`)?.remove();
+  const el = document.querySelector(`.checkout-item[data-id="${id}"]`);
+  if (el) el.remove();
 };
 
 document.getElementById("checkout-close").onclick = () => {
-  document.getElementById("checkout-modal").style.display = \"none\";
+  document.getElementById("checkout-modal").style.display = "none";
 };
+
