@@ -122,13 +122,14 @@ Promise.all([
   };
 
   document.getElementById("floating-cart").addEventListener("click", () => {
-    document.getElementById("review-section").classList.add("active");
-    renderReview();
-  });
+  document.getElementById("review-section").classList.add("active");
+  renderReview(); // ini akan isi ulang tabel
+});
 
-  document.getElementById("review-close").addEventListener("click", () => {
-    document.getElementById("review-section").classList.remove("active");
-  });
+document.getElementById("review-close").addEventListener("click", () => {
+  document.getElementById("review-section").classList.remove("active");
+});
+
 
   document.getElementById("send-wa-btn").addEventListener("click", () => {
     if (!keranjang.length) return;
