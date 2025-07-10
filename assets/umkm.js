@@ -36,7 +36,7 @@ Promise.all([
     const isFav = keranjang.includes(p.id_produk);
     return `
       <div class="produk-card">
-        <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
+        <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi_produk}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
           <img src="${p.gambar_url}" alt="${p.nama_produk}" />
         </div>
         <div class="produk-info">
