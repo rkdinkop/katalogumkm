@@ -66,6 +66,7 @@ Promise.all([
       el.classList.add('selected');
       el.innerHTML = '<i class="fas fa-check-circle"></i>';
     }
+    updateKeranjangIcon();
     tampilkanReview();
   };
 
@@ -92,6 +93,7 @@ Promise.all([
   };
 
   tampilkanReview();
+  updateKeranjangIcon();
 
 }).catch(err => console.error("Gagal load UMKM:", err));
 
@@ -118,17 +120,33 @@ function tampilkanReview() {
     tbody.appendChild(row);
   });
 
-  reviewSection.style.display = "block";
+  reviewSection.style.display = "flex";
+  reviewSection.scrollIntoView({ behavior: "smooth" });
 }
 
 function updateJumlah(index, value) {
   keranjang[index].jumlah = parseInt(value);
   tampilkanReview();
+  updateKeranjangIcon();
 }
 
 function hapusItem(index) {
   keranjang.splice(index, 1);
   tampilkanReview();
+  updateKeranjangIcon();
+}
+
+function updateKeranjangIcon() {
+  let icon = document.getElementById("floating-cart");
+  if (!icon) {
+    icon = document.createElement("div");
+    icon.id = "floating-cart";
+    icon.innerHTML = '<i class="fas fa-shopping-cart"></i><span id="cart-count">0</span>';
+    icon.onclick = () => tampilkanReview();
+    document.body.appendChild(icon);
+  }
+  document.getElementById("cart-count").innerText = keranjang.length;
+  icon.style.display = keranjang.length ? "flex" : "none";
 }
 
 function switchView(mode) {
