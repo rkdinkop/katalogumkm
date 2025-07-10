@@ -67,7 +67,7 @@ Promise.all([
       el.innerHTML = '<i class="fas fa-check-circle"></i>';
     }
     updateKeranjangIcon();
-    tampilkanReview();
+    //tampilkanReview();
   };
 
   window.showDetail = function(nama, deskripsi, gambar, harga) {
