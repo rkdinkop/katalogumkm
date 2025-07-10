@@ -1,25 +1,74 @@
-body {
-  font-family: sans-serif;
-  padding: 1rem;
-  margin: 0;
+#produk-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-header, footer {
+.produk-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.produk-card:hover {
+  transform: scale(1.02);
+}
+
+.produk-img img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.produk-info {
   padding: 1rem;
-  background-color: #f0f0f0;
   text-align: center;
 }
 
-#produk-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+.produk-nama {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
 }
 
-.produk-item {
-  border: 1px solid #ccc;
-  padding: 1rem;
-  border-radius: 8px;
-  background-color: #fff;
+.produk-harga {
+  color: #e91e63;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.produk-umkm {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.produk-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-detail,
+.btn-wa {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.btn-detail {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn-wa {
+  background-color: #25d366;
+  color: white;
 }
