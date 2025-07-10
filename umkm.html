@@ -1,74 +1,18 @@
-
-<!-- umkm.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil UMKM</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-    .container { padding: 20px; max-width: 900px; margin: auto; }
-    h2 { color: #004aad; }
-    .produk { background: white; margin-top: 10px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 10px; max-width: 300px; }
-    .produk img { width: 100%; border-radius: 8px; }
-    iframe { width: 100%; height: 250px; border: 0; border-radius: 10px; }
-    a.btn { display: inline-block; margin-top: 10px; background: #004aad; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; }
-    .produk-list { display: flex; flex-wrap: wrap; gap: 15px; }
-  </style>
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
-  <div class="container">
-    <div id="umkmInfo"></div>
-    <h3>🛒 Produk Kami:</h3>
-    <div id="produkUMKM" class="produk-list"></div>
-  </div>
-
+  <div id="umkm-profil"></div>
+  <div id="umkm-produk"></div>
   <script>
-    const umkmID = new URLSearchParams(window.location.search).get("id");
-    const SHEET_API_UMKM = 'https://script.google.com/macros/s/AKfycbyj55IGe_ZfForpEb72cvwlUOJZ881_uH9l08_oLgfPlEx0slF2NYhFkGnJd4SldgRq/exec?sheet=umkm';
-    const SHEET_API_PRODUK = 'https://script.google.com/macros/s/AKfycbyj55IGe_ZfForpEb72cvwlUOJZ881_uH9l08_oLgfPlEx0slF2NYhFkGnJd4SldgRq/exec?sheet=produk';
-
-    async function loadUMKM() {
-      const [resUMKM, resProduk] = await Promise.all([
-        fetch(SHEET_API_UMKM),
-        fetch(SHEET_API_PRODUK)
-      ]);
-      const umkmList = await resUMKM.json();
-      const produkList = await resProduk.json();
-
-      const umkm = umkmList.find(u => u.ID_UMKM === umkmID);
-      const produkUMKM = produkList.filter(p => p.ID_UMKM === umkmID);
-
-      if (!umkm) {
-        document.getElementById('umkmInfo').innerHTML = '<p>UMKM tidak ditemukan.</p>';
-        return;
-      }
-
-      document.getElementById('umkmInfo').innerHTML = `
-        <h2>${umkm.Nama_UMKM}</h2>
-        <p><strong>Kecamatan:</strong> ${umkm.Kecamatan}</p>
-        <p><strong>Alamat:</strong> ${umkm.Alamat_Lengkap}</p>
-        <a class="btn" href="https://wa.me/${umkm.No_WA}?text=Halo%2C%20saya%20tertarik%20dengan%20produk%20Anda" target="_blank">💬 Hubungi via WhatsApp</a>
-        <h3>📍 Lokasi:</h3>
-        <iframe src="https://www.google.com/maps?q=${umkm.Latitude},${umkm.Longitude}&hl=id&z=15&output=embed"></iframe>
-        <a class="btn" href="https://www.google.com/maps?q=${umkm.Latitude},${umkm.Longitude}" target="_blank">📍 Buka di Google Maps</a>
-      `;
-
-      const produkContainer = document.getElementById('produkUMKM');
-      produkUMKM.forEach(p => {
-        produkContainer.innerHTML += `
-          <div class="produk">
-            <img src="${p.Gambar_URL}" alt="${p.Nama_Produk}">
-            <p><strong>${p.Nama_Produk}</strong></p>
-            <p>Harga: Rp${parseInt(p.Harga).toLocaleString()}</p>
-            <a class="btn" href="https://wa.me/${umkm.No_WA}?text=Halo%2C%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.Nama_Produk)}" target="_blank">Pesan via WhatsApp</a>
-          </div>
-        `;
-      });
-    }
-
-    loadUMKM();
+    const urlParams = new URLSearchParams(window.location.search);
+    const umkmId = urlParams.get('id');
+    // fetch data UMKM dan produk berdasarkan umkmId
   </script>
 </body>
 </html>
