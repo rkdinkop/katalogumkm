@@ -158,6 +158,9 @@ document.getElementById("review-close").addEventListener("click", () => {
   document.getElementById("review-section").classList.remove("active");
 });
 
+  document.getElementById("modal-close").onclick = () => {
+  document.getElementById("produk-modal").style.display = "none";
+};
 
   document.getElementById("send-wa-btn").addEventListener("click", () => {
     if (!keranjang.length) return;
