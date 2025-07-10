@@ -1,24 +1,42 @@
-const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE/produk";
+const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
 
-// Ambil data produk & UMKM
+// Fetch data dari semua sheet yang dibutuhkan
 Promise.all([
   fetch(`${sheetBase}/produk`).then(res => res.json()),
   fetch(`${sheetBase}/umkm`).then(res => res.json()),
   fetch(`${sheetBase}/pengaturan`).then(res => res.json())
-]).then(([produk, umkm, pengaturan]) => {
-  document.getElementById("site-title").innerText = pengaturan.find(p => p.key === 'site_title')?.value || "Katalog UMKM";
-  document.getElementById("footer-text").innerText = pengaturan.find(p => p.key === 'text_footer')?.value || "";
+])
+.then(([produk, umkm, pengaturan]) => {
+  // Debug log
+  console.log("Produk:", produk);
+  console.log("UMKM:", umkm);
+  console.log("Pengaturan:", pengaturan);
 
-  const search = document.getElementById("search");
+  // Cek apakah data pengaturan valid
+  if (Array.isArray(pengaturan)) {
+    const siteTitle = pengaturan.find(p => p.key === 'site_title')?.value || "Katalog UMKM";
+    const footerText = pengaturan.find(p => p.key === 'text_footer')?.value || "";
+
+    document.getElementById("site-title").innerText = siteTitle;
+    document.getElementById("footer-text").innerText = footerText;
+  } else {
+    console.warn("Pengaturan tidak valid atau gagal dimuat.");
+  }
+
+  // Referensi elemen pencarian dan daftar produk
+  const searchInput = document.getElementById("search");
   const produkList = document.getElementById("produk-list");
 
-  // Render produk
+  // Fungsi render produk
   function renderProduk(keyword = "") {
     const hasil = produk.filter(p => {
+      const umkmData = umkm.find(u => u.id_umkm === p.id_umkm);
       return (
         p.status === "aktif" &&
-        (p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) ||
-         umkm.find(u => u.id_umkm === p.id_umkm)?.nama_umkm.toLowerCase().includes(keyword.toLowerCase()))
+        (
+          p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) ||
+          umkmData?.nama_umkm.toLowerCase().includes(keyword.toLowerCase())
+        )
       );
     });
 
@@ -31,14 +49,21 @@ Promise.all([
           <p>Rp ${parseInt(p.harga).toLocaleString()}</p>
           <p><strong>${u?.nama_umkm || "UMKM"}</strong> - ${p.kecamatan}</p>
           <a href="umkm.html?id=${u?.id_umkm}" target="_blank">Lihat UMKM</a><br>
-          <a href="https://wa.me/${u?.kontak_wa}?text=Saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" target="_blank">Pesan via WA</a>
-        </div>`;
+          <a href="https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}" target="_blank">Pesan via WA</a>
+        </div>
+      `;
     }).join("");
   }
 
+  // Render awal
   renderProduk();
 
-  search.addEventListener("input", (e) => {
+  // Event pencarian
+  searchInput.addEventListener("input", (e) => {
     renderProduk(e.target.value);
   });
+
+})
+.catch(error => {
+  console.error("Gagal memuat data dari Google Sheets:", error);
 });
