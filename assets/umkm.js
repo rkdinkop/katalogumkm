@@ -77,9 +77,10 @@ Promise.all([
     modal.style.display = "flex";
   };
 
-  document.getElementById("modal-close").onclick = () => {
-    document.getElementById("produk-modal").style.display = "none";
-  };
+  document.getElementById("floating-cart").addEventListener("click", () => {
+  document.getElementById("review-section").classList.add("active");
+  renderReview();
+});
 
   function updateCartIcon() {
     const icon = document.getElementById("floating-cart");
