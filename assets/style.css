@@ -175,21 +175,25 @@
   display: none;
   position: fixed;
   z-index: 999;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
   background: white;
-  padding: 2rem;
+  width: 90%;
   max-width: 400px;
-  margin: auto;
-  text-align: center;
-  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1rem;
   border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-content img {
@@ -198,10 +202,30 @@
   margin-bottom: 1rem;
 }
 
+.modal-gambar {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.modal-deskripsi {
+  font-size: 0.95rem;
+  color: #333;
+  margin-top: 0.5rem;
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
 #modal-close {
   position: absolute;
   top: 10px; right: 15px;
-  font-size: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #888;
   cursor: pointer;
 }
 
