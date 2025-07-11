@@ -5,6 +5,10 @@ if (!user) {
   window.location.href = "login.html";
 }
 
+const kontakWA = user ? umkm.kontak_wa : umkm.kontak_wa.replace(/(\d{4})\d+/, '$1*****');
+const linkWA = user ? `https://wa.me/${umkm.kontak_wa}` : '#';
+
+
 const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
 const urlParams = new URLSearchParams(window.location.search);
 const idUMKM = urlParams.get("id");
