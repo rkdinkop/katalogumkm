@@ -212,3 +212,5 @@ function kirimTransaksi(produkList, total) {
   }).then(res => console.log("Terkirim ke Sheet!"));
 }
 
+kirimTransaksi(produkDipilih, totalHarga);
+
