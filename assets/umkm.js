@@ -63,7 +63,12 @@ Promise.all([
     const user = JSON.parse(localStorage.getItem("user") || "null");
     if (!user) {
       alert("Anda harus login untuk menambahkan produk.");
-      window.location.href = "login.html";
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+if (!user) {
+  showLoginPopup(); // tampilkan form login pop-up
+  return;
+}
+
       return;
     }
 
