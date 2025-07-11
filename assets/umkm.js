@@ -1,3 +1,10 @@
+const user = JSON.parse(localStorage.getItem("user") || "null");
+
+if (!user) {
+  alert("Anda harus login terlebih dahulu.");
+  window.location.href = "login.html";
+}
+
 const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
 const urlParams = new URLSearchParams(window.location.search);
 const idUMKM = urlParams.get("id");
