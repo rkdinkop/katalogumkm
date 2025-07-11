@@ -7,10 +7,11 @@ let keranjangQty = {}; // { id_produk: jumlah }
 let produkUMKM = [];
 let umkm = null; // <-- inisialisasi umkm global
 
-const user = JSON.parse(localStorage.getItem("user") || "null");
-if (!user) {
-  alert("Anda harus login terlebih dahulu.");
-  window.location.href = "login.html";
+let user = null;
+
+function cekLogin() {
+  user = JSON.parse(localStorage.getItem("user") || "null");
+  return user !== null;
 }
 
 Promise.all([
@@ -100,9 +101,15 @@ document.getElementById("modal-close").onclick = () => {
 };
 
 document.getElementById("floating-cart").addEventListener("click", () => {
+  if (!cekLogin()) {
+    alert("Anda harus login terlebih dahulu untuk mereview pesanan.");
+    window.location.href = "login.html";
+    return;
+  }
   document.getElementById("review-section").classList.add("active");
   renderReview();
 });
+
 
 document.getElementById("review-close").addEventListener("click", () => {
   document.getElementById("review-section").classList.remove("active");
