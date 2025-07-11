@@ -1,104 +1,121 @@
-const user = JSON.parse(localStorage.getItem("user") || "null");
+const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
+let dataProduk = [], dataUMKM = [];
+let keranjang = [], keranjangQty = {};
 
-if (!user) {
-  alert("Anda harus login terlebih dahulu.");
-  window.location.href = "login.html";
+fetch(`${sheetBase}/produk`).then(res => res.json()).then(data => {
+  dataProduk = data.filter(p => p.status === "aktif");
+  renderProduk(dataProduk);
+}).catch(err => console.error("Gagal load produk:", err));
+
+fetch(`${sheetBase}/umkm`).then(res => res.json()).then(data => {
+  dataUMKM = data;
+  renderFilter(data);
+}).catch(err => console.error("Gagal load UMKM:", err));
+
+function renderProduk(list) {
+  const container = document.getElementById("produk-list");
+  container.innerHTML = list.map(p => {
+    return `
+    <div class="produk-card">
+      <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi_produk}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
+        <img src="${p.gambar_url}" alt="${p.nama_produk}" />
+      </div>
+      <div class="produk-info">
+        <h3 class="produk-nama">${p.nama_produk}</h3>
+        <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
+        <div class="produk-actions">
+          <button class="btn-wa" onclick="handleWAClick('${p.id_umkm}', '${p.nama_produk}')">Pesan via WA</button>
+          <button class="btn-fav" onclick="toggleFav('${p.id_produk}', this)">➕ Keranjang</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+  updateCartIcon();
 }
 
-const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
-let keranjang = [];
+function renderFilter(umkmList) {
+  const kecamatan = [...new Set(umkmList.map(u => u.kecamatan))].sort();
+  const filter = document.getElementById("filter-kecamatan");
+  filter.innerHTML = `<option value="">-- Semua Kecamatan --</option>` + kecamatan.map(k => `<option value="${k}">${k}</option>`).join("");
+}
 
-Promise.all([
-  fetch(`${sheetBase}/produk`).then(res => res.json()),
-  fetch(`${sheetBase}/umkm`).then(res => res.json()),
-  fetch(`${sheetBase}/pengaturan`).then(res => res.json())
-])
-.then(([produk, umkm, pengaturan]) => {
-  if (Array.isArray(pengaturan)) {
-    document.getElementById("site-title").innerText = pengaturan.find(p => p.key === 'site_title')?.value || "Katalog UMKM";
-    document.getElementById("footer-text").innerText = pengaturan.find(p => p.key === 'text_footer')?.value || "";
+document.getElementById("filter-kecamatan").addEventListener("change", (e) => {
+  const val = e.target.value;
+  if (val) {
+    const umkmId = dataUMKM.filter(u => u.kecamatan === val).map(u => u.id_umkm);
+    const filtered = dataProduk.filter(p => umkmId.includes(p.id_umkm));
+    renderProduk(filtered);
+  } else {
+    renderProduk(dataProduk);
   }
+});
 
-  const searchInput = document.getElementById("search");
-  const filterKategori = document.getElementById("filter-kategori");
-  const filterKecamatan = document.getElementById("filter-kecamatan");
-  const produkList = document.getElementById("produk-list");
+document.getElementById("search-input").addEventListener("input", (e) => {
+  const keyword = e.target.value.toLowerCase();
+  const filtered = dataProduk.filter(p => p.nama_produk.toLowerCase().includes(keyword));
+  renderProduk(filtered);
+});
 
-  const semuaKategori = [...new Set(produk.map(p => p.kategori).filter(Boolean))];
-  const semuaKecamatan = [...new Set(produk.map(p => p.kecamatan).filter(Boolean))];
+window.showDetail = function(nama, deskripsi, gambar, harga) {
+  const modal = document.getElementById("produk-modal");
+  modal.querySelector(".modal-nama").innerText = nama;
+  modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
+  modal.querySelector(".modal-gambar").src = gambar;
+  modal.querySelector(".modal-harga").innerText = "Rp " + harga;
+  modal.querySelector(".modal-gambar").onclick = function () {
+    this.classList.toggle("zoomed");
+  };
+  modal.style.display = "flex";
+};
 
-  filterKategori.innerHTML = '<option value="">Semua Kategori</option>' + semuaKategori.map(k => `<option value="${k}">${k}</option>`).join('');
-  filterKecamatan.innerHTML = '<option value="">Semua Kecamatan</option>' + semuaKecamatan.map(k => `<option value="${k}">${k}</option>`).join('');
+document.getElementById("modal-close").onclick = () => {
+  document.getElementById("produk-modal").style.display = "none";
+};
 
-  function renderProduk(keyword = "", kategori = "", kecamatan = "") {
-    const hasil = produk.filter(p => {
-      const u = umkm.find(u => u.id_umkm === p.id_umkm);
-      return (
-        p.status === "aktif" &&
-        (p.nama_produk.toLowerCase().includes(keyword.toLowerCase()) || u?.nama_umkm.toLowerCase().includes(keyword.toLowerCase())) &&
-        (kategori ? p.kategori === kategori : true) &&
-        (kecamatan ? p.kecamatan === kecamatan : true)
-      );
-    });
-
-    produkList.innerHTML = hasil.map(p => {
-      const u = umkm.find(u => u.id_umkm === p.id_umkm);
-      const isFav = keranjang.includes(p.id_produk);
-      return `
-        <div class="produk-card">
-          <div class="produk-img" onclick="showDetail('${p.nama_produk}', \`${p.deskripsi_produk}\`, '${p.gambar_url}', '${parseInt(p.harga).toLocaleString()}')">
-            <img src="${p.gambar_url}" alt="${p.nama_produk}" />
-          </div>
-          <div class="produk-info">
-            <h3 class="produk-nama">${p.nama_produk}</h3>
-            <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
-            <p class="produk-umkm">${u?.nama_umkm || "UMKM"} - ${p.kecamatan}</p>
-            <div class="produk-actions">
-              <a href="umkm.html?id=${u?.id_umkm}" class="btn-detail">Lihat UMKM</a>
-              <button class="btn-wa" onclick="window.open('https://wa.me/${u?.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(p.nama_produk)}', '_blank')">Pesan via WA</button>
-              
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
+window.toggleFav = function(id, el) {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (!user) {
+    alert("Anda harus login terlebih dahulu.");
+    window.location.href = "login.html";
+    return;
   }
-
-  window.toggleFav = function(id, el) {
-    if (keranjang.includes(id)) {
-      keranjang = keranjang.filter(i => i !== id);
-      el.classList.remove('selected');
-      el.innerText = '➕ Keranjang';
-    } else {
-      keranjang.push(id);
-      el.classList.add('selected');
-      el.innerText = '🛒 Hapus';
-    }
-    console.log("Keranjang:", keranjang);
+  if (keranjang.includes(id)) {
+    keranjang = keranjang.filter(i => i !== id);
+    delete keranjangQty[id];
+    el.classList.remove("selected");
+    el.innerText = "➕ Keranjang";
+  } else {
+    keranjang.push(id);
+    keranjangQty[id] = 1;
+    el.classList.add("selected");
+    el.innerText = "🛒 Hapus";
   }
+  updateCartIcon();
+};
 
-  window.showDetail = function(nama, deskripsi, gambar, harga) {
-    const modal = document.getElementById("produk-modal");
-    modal.querySelector(".modal-nama").innerText = nama;
-    modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
-    modal.querySelector(".modal-gambar").src = gambar;
-    modal.querySelector(".modal-harga").innerText = "Rp " + harga;
-    modal.querySelector(".modal-gambar").onclick = function () {
-      this.classList.toggle("zoomed");
-    };
-
-    modal.style.display = "flex";
+window.handleWAClick = function(id_umkm, nama_produk) {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (!user) {
+    alert("Silakan login terlebih dahulu untuk menghubungi via WA.");
+    window.location.href = "login.html";
+    return;
   }
+  const umkm = dataUMKM.find(u => u.id_umkm === id_umkm);
+  if (!umkm) return;
+  window.open(`https://wa.me/${umkm.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(nama_produk)}`, '_blank');
+};
 
-  document.getElementById("modal-close").onclick = () => {
-    document.getElementById("produk-modal").style.display = "none";
+function updateCartIcon() {
+  const icon = document.getElementById("floating-cart");
+  const count = document.getElementById("cart-count");
+  if (keranjang.length > 0) {
+    icon.style.display = "flex";
+    count.innerText = keranjang.length;
+  } else {
+    icon.style.display = "none";
   }
+}
 
-  renderProduk();
-  searchInput.addEventListener("input", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
-  filterKategori.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
-  filterKecamatan.addEventListener("change", () => renderProduk(searchInput.value, filterKategori.value, filterKecamatan.value));
-})
-.catch(error => {
-  console.error("Gagal memuat data dari Google Sheets:", error);
+document.getElementById("floating-cart").addEventListener("click", () => {
+  alert("Untuk review dan checkout keranjang, silakan buka halaman profil UMKM terlebih dahulu.");
 });
