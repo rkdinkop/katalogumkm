@@ -6,13 +6,14 @@ fetch(`${sheetBase}/produk`)
   .then(data => {
     dataProduk = data.filter(p => p.status === "aktif");
     renderProduk(dataProduk);
+    renderKategori(dataProduk); // buat dropdown kategori
   });
 
 fetch(`${sheetBase}/umkm`)
   .then(res => res.json())
   .then(data => {
     dataUMKM = data;
-    renderFilter(data);
+    renderKecamatan(data);
   });
 
 function renderProduk(list) {
@@ -37,30 +38,47 @@ function renderProduk(list) {
   }).join("");
 }
 
-function renderFilter(umkmList) {
+function renderKecamatan(umkmList) {
   const kecamatanSet = new Set(umkmList.map(u => u.kecamatan));
   const filter = document.getElementById("filter-kecamatan");
   filter.innerHTML = `<option value="">-- Semua Kecamatan --</option>` +
     [...kecamatanSet].sort().map(k => `<option value="${k}">${k}</option>`).join("");
 }
 
-document.getElementById("filter-kecamatan").addEventListener("change", (e) => {
-  const val = e.target.value;
-  if (val) {
-    const umkmId = dataUMKM.filter(u => u.kecamatan === val).map(u => u.id_umkm);
-    const filtered = dataProduk.filter(p => umkmId.includes(p.id_umkm));
-    renderProduk(filtered);
-  } else {
-    renderProduk(dataProduk);
-  }
-});
+function renderKategori(produkList) {
+  const kategoriSet = new Set(produkList.map(p => p.kategori));
+  const filter = document.getElementById("filter-kategori");
+  filter.innerHTML = `<option value="">-- Semua Kategori --</option>` +
+    [...kategoriSet].sort().map(k => `<option value="${k}">${k}</option>`).join("");
+}
 
+// Filter berdasarkan dropdown kategori & kecamatan
+document.getElementById("filter-kecamatan").addEventListener("change", applyFilters);
+document.getElementById("filter-kategori").addEventListener("change", applyFilters);
+
+function applyFilters() {
+  const valKec = document.getElementById("filter-kecamatan").value;
+  const valKat = document.getElementById("filter-kategori").value;
+  let result = [...dataProduk];
+
+  if (valKec) {
+    const umkmId = dataUMKM.filter(u => u.kecamatan === valKec).map(u => u.id_umkm);
+    result = result.filter(p => umkmId.includes(p.id_umkm));
+  }
+  if (valKat) {
+    result = result.filter(p => p.kategori === valKat);
+  }
+  renderProduk(result);
+}
+
+// Pencarian
 document.getElementById("search-input").addEventListener("input", (e) => {
   const keyword = e.target.value.toLowerCase();
   const filtered = dataProduk.filter(p => p.nama_produk.toLowerCase().includes(keyword));
   renderProduk(filtered);
 });
 
+// Modal detail produk
 window.showDetail = function(nama, deskripsi, gambar, harga) {
   const modal = document.getElementById("produk-modal");
   modal.querySelector(".modal-nama").innerText = nama;
@@ -77,6 +95,7 @@ document.getElementById("modal-close").onclick = () => {
   document.getElementById("produk-modal").style.display = "none";
 };
 
+// WA tombol
 window.handleWAClick = function(id_umkm, nama_produk) {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   if (!user) {
