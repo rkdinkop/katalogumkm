@@ -9,7 +9,7 @@
 <body>
   <header class="main-header">
     <h1 id="site-title">Katalog UMKM</h1>
-    <input type="text" id="search" placeholder="Cari produk atau UMKM...">
+    <input type="text" id="search-input" placeholder="Cari produk atau UMKM...">
   </header>
 
   <section class="hero-banner">
@@ -24,9 +24,12 @@
     <select id="filter-kecamatan"></select>
   </div>
 
-  <main id="produk-list" class="produk-grid"></main>
+  <main id="produk-list" class="produk-grid">
+    <div id="floating-cart">
+  🛒 <span id="cart-count">0</span>
+  </div>
 
-  <button id="checkout-btn" class="btn-checkout" style="display: none;">Checkout via WA</button>
+  </main>
 
   <footer>
     <p id="footer-text"></p>
