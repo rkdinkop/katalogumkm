@@ -9,11 +9,6 @@ let umkm = null; // <-- inisialisasi umkm global
 
 let user = null;
 
-function cekLogin() {
-  user = JSON.parse(localStorage.getItem("user") || "null");
-  return user !== null;
-}
-
 Promise.all([
   fetch(`${sheetBase}/umkm`).then(res => res.json()),
   fetch(`${sheetBase}/produk`).then(res => res.json())
@@ -70,6 +65,13 @@ Promise.all([
 
 // --- FUNGSI TAMBAHAN ---
 window.toggleFav = function(id, el) {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (!user) {
+    alert("Anda harus login untuk menambahkan ke keranjang.");
+    window.location.href = "login.html";
+    return;
+  }
+
   if (keranjang.includes(id)) {
     keranjang = keranjang.filter(i => i !== id);
     delete keranjangQty[id];
@@ -81,6 +83,7 @@ window.toggleFav = function(id, el) {
     el.classList.add('selected');
     el.innerText = '🛒 Hapus';
   }
+
   updateCartIcon();
 };
 
@@ -182,11 +185,20 @@ window.removeFromCart = function(id) {
 
 // WA Checkout
 document.getElementById("send-wa-btn").addEventListener("click", () => {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (!user) {
+    alert("Anda harus login untuk mengirim pesanan.");
+    window.location.href = "login.html";
+    return;
+  }
+
   if (!keranjang.length) return;
+
   const pesan = keranjang.map(id => {
     const p = produkUMKM.find(pr => pr.id_produk === id);
     return `- ${p.nama_produk} (Rp ${parseInt(p.harga).toLocaleString()})`;
   }).join("%0A");
+
   window.open(`https://wa.me/${umkm.kontak_wa}?text=Halo,%20saya%20tertarik%20dengan%20produk:%0A${pesan}`, '_blank');
 });
 
