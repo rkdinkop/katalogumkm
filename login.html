@@ -1,32 +1,86 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Pembeli</title>
-  <link rel="stylesheet" href="assets/style.css"/>
+  <meta charset="UTF-8">
+  <title>Login UMKM</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: sans-serif;
+    }
+    .login-modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      padding: 24px;
+      width: 300px;
+      z-index: 999;
+    }
+    .login-modal h2 {
+      margin-top: 0;
+      color: #e91e63;
+    }
+    .login-modal input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .login-modal button {
+      width: 100%;
+      background: #e91e63;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .login-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #999;
+    }
+  </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>Masuk sebagai Pembeli</h2>
-    <input type="text" id="nama" placeholder="Nama Lengkap" required />
-    <input type="tel" id="wa" placeholder="Nomor WA (628xxxx)" required />
-    <button onclick="login()">Login</button>
+  <div class="login-modal" id="loginModal">
+    <span class="login-close" onclick="window.location.href='index.html'">✖</span>
+    <h2>Login Dulu Yuk!</h2>
+    <input type="text" id="nama" placeholder="Nama Lengkap" />
+    <input type="text" id="wa" placeholder="Nomor WhatsApp (628xxxx)" />
+    <button onclick="loginUser()">Login</button>
   </div>
 
   <script>
-    function login() {
+    function loginUser() {
       const nama = document.getElementById("nama").value.trim();
       const wa = document.getElementById("wa").value.trim();
+      if (!nama || !wa) return alert("Harap isi semua data.");
 
-      if (!nama || !/^628\d{8,13}$/.test(wa)) {
-        alert("Masukkan nama dan nomor WA yang valid (628...)");
-        return;
-      }
+      const user = { nama, wa };
+      localStorage.setItem("user", JSON.stringify(user));
 
-      localStorage.setItem("user", JSON.stringify({ nama, wa }));
-      alert("Login berhasil!");
-      window.location.href = "index.html";
+      // Simpan ke Google Sheet via Webhook
+      fetch("https://script.google.com/macros/s/AKfycbxo8WrzRSXc-9BsGpxikY57fkqmgQT9Zbgfm5v1asgTjRJyXohBbyWm5-gUNYpZt9o/exec", {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: { "Content-Type": "application/json" }
+      }).then(() => {
+        alert("Berhasil login!");
+        window.location.href = "index.html";
+      }).catch(err => {
+        console.error("Gagal login:", err);
+        alert("Login gagal. Silakan coba lagi.");
+      });
     }
   </script>
 </body>
