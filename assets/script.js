@@ -1,3 +1,5 @@
+// --- script.js ---
+
 const sheetBase = "https://opensheet.elk.sh/18m_LNkymanQNHmZYV-O_4vdp_eyS3solzsaxVi20KZE";
 let dataProduk = [], dataUMKM = [];
 let keranjang = [], keranjangQty = {};
@@ -25,13 +27,13 @@ function renderProduk(list) {
         <p class="produk-harga">Rp ${parseInt(p.harga).toLocaleString()}</p>
         <div class="produk-actions">
           <button class="btn-wa" onclick="handleWAClick('${p.id_umkm}', '${p.nama_produk}')">Pesan via WA</button>
-          <button class="btn-fav" onclick="toggleFav('${p.id_produk}', this)">➕ Keranjang</button>
+          <button class="btn-visit" onclick="window.location.href='umkm.html?id=${p.id_umkm}'">🔍 Kunjungi UMKM</button>
         </div>
       </div>
     </div>`;
   }).join("");
-  updateCartIcon();
 }
+
 
 function renderFilter(umkmList) {
   const kecamatan = [...new Set(umkmList.map(u => u.kecamatan))].sort();
