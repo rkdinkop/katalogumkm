@@ -126,6 +126,41 @@ document.addEventListener("DOMContentLoaded", function () {
     modal.style.display = "flex";
   };
 
+  function showLoginPopup() {
+  document.getElementById("login-popup").style.display = "flex";
+}
+
+document.getElementById("login-close").addEventListener("click", () => {
+  document.getElementById("login-popup").style.display = "none";
+});
+
+document.getElementById("login-submit").addEventListener("click", () => {
+  const nama = document.getElementById("login-nama").value.trim();
+  const wa = document.getElementById("login-wa").value.trim();
+
+  if (!nama || !wa.startsWith("62")) {
+    alert("Nama dan WA wajib diisi, mulai dengan 62.");
+    return;
+  }
+
+  const userData = { nama, wa };
+  localStorage.setItem("user", JSON.stringify(userData));
+
+  fetch("https://script.google.com/macros/s/AKfycbwcrkAzqU2QaG9JIXlc7SPMI_TVRlqxMIPUqQGgpJ8/exec", {
+    method: "POST",
+    body: JSON.stringify(userData),
+    headers: { "Content-Type": "application/json" }
+  }).then(res => res.json())
+    .then(() => {
+      alert("Login berhasil!");
+      document.getElementById("login-popup").style.display = "none";
+    }).catch(() => {
+      alert("Gagal kirim data login.");
+      document.getElementById("login-popup").style.display = "none";
+    });
+});
+
+
   const modalClose = document.getElementById("modal-close");
   if (modalClose) {
     modalClose.addEventListener("click", () => {
