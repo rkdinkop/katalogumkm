@@ -46,7 +46,7 @@ function renderKecamatan(umkmList) {
 }
 
 function renderKategori(produkList) {
-  const kategoriSet = new Set(produkList.map(p => p.kategori));
+  const kategoriSet = new Set(produkList.map(p => p.nama_kategori));
   const filter = document.getElementById("filter-kategori");
   filter.innerHTML = `<option value="">-- Semua Kategori --</option>` +
     [...kategoriSet].sort().map(k => `<option value="${k}">${k}</option>`).join("");
