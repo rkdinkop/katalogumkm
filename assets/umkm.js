@@ -192,3 +192,23 @@ function switchView(mode) {
     container.classList.add("list-mode");
   }
 }
+
+const webhookURL = "https://script.google.com/macros/s/AKfycbxo8WrzRSXc-9BsGpxikY57fkqmgQT9Zbgfm5v1asgTjRJyXohBbyWm5-gUNYpZt9o/exec";
+
+function kirimTransaksi(produkList, total) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  fetch(webhookURL, {
+    method: "POST",
+    body: JSON.stringify({
+      nama_user: user.nama,
+      wa_user: user.wa,
+      produk: produkList.map(p => p.nama_produk).join(", "),
+      qty: produkList.length,
+      total: total
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(res => console.log("Terkirim ke Sheet!"));
+}
+
