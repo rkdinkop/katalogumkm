@@ -121,15 +121,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Modal Produk
-  window.showDetail = function (nama, deskripsi, gambar, harga) {
-    const modal = document.getElementById("produk-modal");
-    if (!modal) return;
-    modal.querySelector(".modal-nama").innerText = nama;
-    modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
-    modal.querySelector(".modal-gambar").src = gambar;
-    modal.querySelector(".modal-harga").innerText = "Rp " + parseInt(harga).toLocaleString();
-    modal.style.display = "flex";
+  window.showDetail = function(nama, deskripsi, gambar, harga) {
+  const modal = document.getElementById("produk-modal");
+  modal.querySelector(".modal-nama").innerText = nama;
+  modal.querySelector(".modal-deskripsi").innerHTML = deskripsi.replace(/\n/g, "<br>");
+  modal.querySelector(".modal-gambar").src = gambar;
+  modal.querySelector(".modal-harga").innerText = "Rp " + harga;
+  
+  // Zoom toggle
+  modal.querySelector(".modal-gambar").onclick = function () {
+    this.classList.toggle("zoomed");
   };
+
+  modal.style.display = "flex";
+};
+
 
   function showLoginPopup() {
   document.getElementById("login-popup").style.display = "flex";
