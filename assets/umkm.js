@@ -91,7 +91,12 @@ if (!user) {
     const user = JSON.parse(localStorage.getItem("user") || "null");
     if (!user) {
       alert("Silakan login terlebih dahulu untuk menghubungi via WA.");
-      window.location.href = "login.html";
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+if (!user) {
+  showLoginPopup(); // tampilkan form login pop-up
+  return;
+}
+
       return;
     }
     window.open(`https://wa.me/${umkm.kontak_wa}?text=Halo%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(namaProduk)}`, '_blank');
@@ -129,7 +134,12 @@ if (!user) {
     const user = JSON.parse(localStorage.getItem("user") || "null");
     if (!user) {
       alert("Silakan login terlebih dahulu sebelum mengirim pesanan.");
-      window.location.href = "login.html";
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+if (!user) {
+  showLoginPopup(); // tampilkan form login pop-up
+  return;
+}
+
       return;
     }
 
