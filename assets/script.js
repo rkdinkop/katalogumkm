@@ -43,7 +43,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const user = JSON.parse(localStorage.getItem("user") || "null");
         if (!user) {
           alert("Silakan login terlebih dahulu.");
-          window.location.href = "login.html";
+          const user = JSON.parse(localStorage.getItem("user") || "null");
+            if (!user) {
+              showLoginPopup(); // tampilkan form login pop-up
+              return;
+            }
+
           return;
         }
         const id_umkm = this.getAttribute("data-id");
